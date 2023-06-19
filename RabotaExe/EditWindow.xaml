@@ -1,0 +1,20 @@
+﻿<Window x:Class="RabotaExe.EditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RabotaExe"
+        mc:Ignorable="d"
+          Title="Edit File" Height="300" Width="400" Background="Wheat">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBox Text="{Binding FileContent, Mode=TwoWay}" Margin="10"/>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+            <Button Content="Save" Click="SaveButton_Click" Width="80" Margin="0 0 10 0" Background="Tan"/>
+            <Button Content="Cancel" Click="CancelButton_Click" Width="80" Background="Tan"/>
+        </StackPanel>
+    </Grid>
+</Window>
