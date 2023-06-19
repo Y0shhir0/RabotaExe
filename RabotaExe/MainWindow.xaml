@@ -14,10 +14,10 @@
             <Setter Property="MinWidth" Value="100"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
-        <Style TargetType="TextBlock">
+        <Style TargetType="TextBlock"> 
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="FontSize" Value="14"/>
-        </Style>
+        </Style> 
         <Style TargetType="TextBox">
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="IsReadOnly" Value="True"/>

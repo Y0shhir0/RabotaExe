@@ -10,7 +10,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+        </Grid.RowDefinitions> 
         <TextBox Text="{Binding FileContent, Mode=TwoWay}" Margin="10"/>
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
             <Button Content="Save" Click="SaveButton_Click" Width="80" Margin="0 0 10 0" Background="Tan"/>

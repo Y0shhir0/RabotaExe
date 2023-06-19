@@ -27,7 +27,7 @@ namespace RabotaExe
             InitializeComponent();
             DataContext = this;
             Title = $"Edit File: {filePath}";
-            FileContent = fileContent;
+            FileContent = fileContent; 
         }
         public EditWindow()
         {

@@ -116,7 +116,7 @@ namespace RabotaExe
                     // Получить измененное содержимое файла
                     string editedContent = editWindow.FileContent;
 
-                    // Записать измененное содержимое файла с указанной кодировкой
+                    // Записать измененное содержимое файла с указанной кодировкой 
                     File.WriteAllText(filePath, editedContent, Encoding.UTF8);
 
                     // Обновить список файлов
