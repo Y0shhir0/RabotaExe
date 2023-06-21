@@ -1,0 +1,214 @@
+Запасной вариант 
+
+<Window x:Class="RabotaExe.EditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="EditWindow" Height="200" Width="400">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Label Content="Выберите путь для загрузки файла:"/>
+        <TextBox x:Name="PathTextBox" Grid.Row="1" Margin="5"/>
+        <Button Content="Обзор..." Grid.Row="2" Margin="5" Click="BrowseButton_Click"/>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
+            <Button x:Name="OKButton" Content="OK" Width="75" Click="OKButton_Click"/>
+            <Button x:Name="CancelButton" Content="Отмена" Width="75" Click="CancelButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
+
+
+
+
+<Window x:Class="RabotaExe.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <Button x:Name="BrowseButton" Content="Обзор" Click="BrowseButton_Click"/>
+            <Button x:Name="EditButton" Content="Редактировать" Click="EditButton_Click"/>
+            <Button x:Name="CopyButton" Content="Копировать" Click="CopyButton_Click"/>
+            <Button x:Name="DeleteButton" Content="Удалить" Click="DeleteButton_Click"/>
+            <Button x:Name="RefreshButton" Content="Обновить" Click="RefreshButton_Click"/>
+        </StackPanel>
+        <ListBox x:Name="FilesListBox" Grid.Row="1" ItemsSource="{Binding FilesList}" SelectionMode="Single"/>
+    </Grid>
+</Window>
+
+
+
+
+
+
+
+
+
+
+public partial class MainWindow : Window
+{
+    private string selectedPath;
+    private ObservableCollection<string> filesList;
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    public string SelectedPath
+    {
+        get { return selectedPath; }
+        set
+        {
+            selectedPath = value;
+            OnPropertyChanged();
+            RefreshFilesList();
+        }
+    }
+
+    public ObservableCollection<string> FilesList
+    {
+        get { return filesList; }
+        set
+        {
+            filesList = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    public MainWindow()
+    {
+        InitializeComponent();
+        DataContext = this;
+        FilesList = new ObservableCollection<string>();
+    }
+
+    private void BrowseButton_Click(object sender, RoutedEventArgs e)
+    {
+        var openFileDialog = new OpenFileDialog();
+        openFileDialog.Multiselect = false;
+
+        if (openFileDialog.ShowDialog() == true)
+        {
+            SelectedPath = openFileDialog.FileName;
+        }
+    }
+
+    private void RefreshFilesList()
+    {
+        if (!string.IsNullOrEmpty(SelectedPath))
+        {
+            var directory = System.IO.Path.GetDirectoryName(SelectedPath);
+            var files = Directory.GetFiles(directory);
+            FilesList.Clear();
+            foreach (var file in files)
+            {
+                FilesList.Add(file);
+            }
+        }
+    }
+
+    private void DeleteButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (FilesListBox.SelectedItem != null)
+        {
+            var selectedFile = FilesListBox.SelectedItem.ToString();
+            if (MessageBox.Show($"Вы уверены, что хотите удалить {selectedFile}?", "Подтверждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                File.Delete(selectedFile);
+                RefreshFilesList();
+            }
+        }
+    }
+
+ private void EditButton_Click(object sender, RoutedEventArgs e)
+{
+    EditWindow editWindow = new EditWindow();
+    if (editWindow.ShowDialog() == true)
+    {
+        string selectedPath = SelectedPath;
+        string targetPath = editWindow.SelectedPath;
+
+        if (!string.IsNullOrEmpty(selectedPath) && !string.IsNullOrEmpty(targetPath))
+        {
+            string fileName = Path.GetFileName(selectedPath);
+            string destinationPath = Path.Combine(targetPath, fileName);
+
+            try
+            {
+                File.Copy(selectedPath, destinationPath);
+                MessageBox.Show("Файл загружен в выбранный путь.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка при копировании файла: " + ex.Message);
+            }
+        }
+    }
+
+    private void CopyButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (!string.IsNullOrEmpty(SelectedPath))
+        {
+            Clipboard.SetText(SelectedPath);
+            MessageBox.Show("Файл скопирован.");
+        }
+    }
+
+    private void RefreshButton_Click(object sender, RoutedEventArgs e)
+    {
+        RefreshFilesList();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+public partial class EditWindow : Window
+{
+    public string SelectedPath { get; private set; }
+
+    public EditWindow()
+    {
+        InitializeComponent();
+    }
+
+    private void BrowseButton_Click(object sender, RoutedEventArgs e)
+    {
+        var folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+        if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        {
+            SelectedPath = folderBrowserDialog.SelectedPath;
+            PathTextBox.Text = SelectedPath;
+        }
+    }
+
+    private void OKButton_Click(object sender, RoutedEventArgs e)
+    {
+        DialogResult = true;
+    }
+
+    private void CancelButton_Click(object sender, RoutedEventArgs e)
+    {
+        DialogResult = false;
+    }
+}
