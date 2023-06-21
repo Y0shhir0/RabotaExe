@@ -51,6 +51,7 @@ namespace RabotaExe
                 OnPropertyChanged();
             }
         }
+
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -88,7 +89,6 @@ namespace RabotaExe
             }
         }
 
-
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             if (FilesListBox.SelectedItem != null)
@@ -104,23 +104,59 @@ namespace RabotaExe
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
-            string selectedFile = FilesListBox.SelectedItem as string;
-            if (selectedFile != null)
+            EditWindow editWindow = new EditWindow();
+
+            Dictionary<string, string> knownPaths = new Dictionary<string, string>()
+        {
+            { "CheckBox1", @"C:\Users\NEW PC\Desktop\блокнот\1" },
+            { "Путь 2", @"C:\Users\NEW PC\Desktop\путь 2" },
+            { "Путь 3", @"C:\Users\NEW PC\Desktop\путь 3" },
+            { "Путь 4", @"C:\Users\NEW PC\Desktop\путь 4" },
+            { "Путь 5", @"C:\Users\NEW PC\Desktop\путь 5" },
+            { "Путь 6", @"C:\Users\NEW PC\Desktop\путь 6" },
+            { "Путь 7", @"C:\Users\NEW PC\Desktop\путь 7" },
+            { "Путь 8", @"C:\Users\NEW PC\Desktop\путь 8" },
+            { "Путь 9", @"C:\Users\NEW PC\Desktop\путь 9" },
+            { "Путь 10", @"C:\Users\NEW PC\Desktop\путь 10" }
+        };
+
+            editWindow.PathDictionary = knownPaths;
+
+            if (editWindow.ShowDialog() == true)
             {
-                string filePath = System.IO.Path.Combine(SelectedPath, selectedFile);
-                string fileContent = File.ReadAllText(filePath, Encoding.UTF8);
+                string selectedPath = SelectedPath;
+                string targetPath = editWindow.SelectedPath;
 
-                EditWindow editWindow = new EditWindow(filePath, fileContent);
-                if (editWindow.ShowDialog() == true)
+                if (!string.IsNullOrEmpty(selectedPath) && !string.IsNullOrEmpty(targetPath))
                 {
-                    // Получить измененное содержимое файла
-                    string editedContent = editWindow.FileContent;
+                    string fileName = System.IO.Path.GetFileName(selectedPath);
+                    string destinationPath = System.IO.Path.Combine(targetPath, fileName);
 
-                    // Записать измененное содержимое файла с указанной кодировкой 
-                    File.WriteAllText(filePath, editedContent, Encoding.UTF8);
+                    try
+                    {
+                        File.Copy(selectedPath, destinationPath);
+                        MessageBox.Show("Файл загружен в выбранный путь: " + destinationPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ошибка при копировании файла: " + ex.Message);
+                    }
+                }
+            }
+        }
 
-                    // Обновить список файлов
-                    RefreshFilesList();
+        private void CopyButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(SelectedPath))
+            {
+                try
+                {
+                    Clipboard.SetText(SelectedPath);
+                    MessageBox.Show("Файл скопирован.");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Ошибка при копировании файла в буфер обмена: " + ex.Message);
                 }
             }
         }

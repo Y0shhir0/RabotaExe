@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RabotaExe" xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-         Title="File Management App" Height="450" Width="800" Background="Wheat">
+         Title="File Management App" Height="450" Width="900" Background="Wheat">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Margin" Value="0 0 10 0"/>
@@ -32,12 +32,11 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
-            <Button Content="Browse" Click="BrowseButton_Click" Background="Tan"/>
-            <TextBlock Text="Selected Path:"/>
-            <TextBox Text="{Binding SelectedPath}"/>
-            <Button Content="Delete" Click="DeleteButton_Click" Background="Tan"/>
-            <Button Content="Edit" Click="EditButton_Click" Background="Tan"/>
-            <Button Content="Refresh" Click="RefreshButton_Click" Background="Tan"/>
+            <Button Content="Найти" Click="BrowseButton_Click" Background="Tan"/>
+            <Button Content="Удалить" Click="DeleteButton_Click" Background="Tan"/>
+            <Button Content="Загрузить" Click="EditButton_Click" Margin="0 0 10 0" Background="Tan"/>
+            <Button Content="Обновить" Click="RefreshButton_Click" Background="Tan"/>
+            <Button Content="Копировать" Click="CopyButton_Click" Margin="0 0 10 0" Background="Tan"/>
         </StackPanel>
         <ListBox x:Name="FilesListBox" Grid.Row="1" ItemsSource="{Binding FilesList}" Margin="10"/>
     </Grid>
